@@ -7,22 +7,22 @@ class VeterinariaApp:
         self.master.title("Veterinaria App")
         self.master.geometry("600x400")
 
-        # Definición de colores
+        
         self.color_verde = "#6A994E"
         self.color_blanco = "#FFFFFF"
         
-        # Configuración del tema
+        
         self.master.configure(bg=self.color_blanco)
         
-        # Frame principal
+        
         self.frame = tk.Frame(self.master, bg=self.color_blanco)
         self.frame.pack(expand=True, fill=tk.BOTH)
 
-        # Menu superior
+       
         self.menu_frame = tk.Frame(self.frame, bg=self.color_verde)
         self.menu_frame.pack(side=tk.TOP, fill=tk.X)
 
-        # Opciones del menú
+      
         opciones_menu = ["Clientes", "Mascotas", "Citas"]
         self.botones_menu = []
         for opcion in opciones_menu:
@@ -30,15 +30,15 @@ class VeterinariaApp:
             boton.pack(side=tk.LEFT, padx=10, pady=5)
             self.botones_menu.append(boton)
 
-        # Campos para la lista de elementos
+        
         self.lista_frame = tk.Frame(self.frame, bg=self.color_blanco)
         self.lista_frame.pack(expand=True, fill=tk.BOTH, padx=20, pady=10)
 
-        # Lista de elementos
+        
         self.lista_label = tk.Label(self.lista_frame, text="", font=("Arial", 12), bg=self.color_blanco)
         self.lista_label.pack(expand=True, fill=tk.BOTH)
 
-        # Datos de ejemplo
+        
         self.clientes = [{"nombre": "Juan", "telefono": "123456789"}, {"nombre": "Ana", "telefono": "987654321"}]
         self.mascotas = [{"nombre": "Luna", "especie": "Perro", "raza": "Labrador", "dueño": "Juan"}, {"nombre": "Milo", "especie": "Gato", "raza": "Siamés", "dueño": "Ana"}]
         self.citas = [{"fecha": "01/04/2024", "hora": "10:00", "mascota": "Luna"}, {"fecha": "02/04/2024", "hora": "11:00", "mascota": "Milo"}]
@@ -61,7 +61,7 @@ class VeterinariaApp:
         for cliente in self.clientes:
             self.lista_label.config(text=self.lista_label.cget("text") + f"Nombre: {cliente['nombre']}, Teléfono: {cliente['telefono']}\n")
         
-        # Agregar botones para acciones de cliente
+        
         self.agregar_botones_accion("Clientes")
 
     def mostrar_lista_mascotas(self):
@@ -70,7 +70,7 @@ class VeterinariaApp:
         for mascota in self.mascotas:
             self.lista_label.config(text=self.lista_label.cget("text") + f"Nombre: {mascota['nombre']}, Especie: {mascota['especie']}, Raza: {mascota['raza']}, Dueño: {mascota['dueño']}\n")
         
-        # Agregar botones para acciones de mascota
+        
         self.agregar_botones_accion("Mascotas")
 
     def mostrar_lista_citas(self):
@@ -79,7 +79,7 @@ class VeterinariaApp:
         for cita in self.citas:
             self.lista_label.config(text=self.lista_label.cget("text") + f"Fecha: {cita['fecha']}, Hora: {cita['hora']}, Mascota: {cita['mascota']}\n")
         
-        # Agregar botones para acciones de cita
+        
         self.agregar_botones_accion("Citas")
 
     def agregar_botones_accion(self, opcion):
