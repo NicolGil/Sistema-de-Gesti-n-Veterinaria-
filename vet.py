@@ -1,133 +1,141 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import simpledialog, messagebox
 
 class VeterinariaApp:
     def __init__(self, master):
         self.master = master
-        self.master.title("Clínica PetCare - Sistema de Veterinaria")
-        
+        self.master.title("Veterinaria App")
+        self.master.geometry("600x400")
+
+        # Definición de colores
         self.color_verde = "#6A994E"
-        self.color_rosa_claro = "#FFB6C1"
-        self.color_secundario = "#FFFFFF"
+        self.color_blanco = "#FFFFFF"
         
+        # Configuración del tema
+        self.master.configure(bg=self.color_blanco)
         
-        self.master.configure(bg=self.color_secundario)
+        # Frame principal
+        self.frame = tk.Frame(self.master, bg=self.color_blanco)
+        self.frame.pack(expand=True, fill=tk.BOTH)
+
+        # Menu superior
+        self.menu_frame = tk.Frame(self.frame, bg=self.color_verde)
+        self.menu_frame.pack(side=tk.TOP, fill=tk.X)
+
+        # Opciones del menú
+        opciones_menu = ["Clientes", "Mascotas", "Citas"]
+        self.botones_menu = []
+        for opcion in opciones_menu:
+            boton = tk.Button(self.menu_frame, text=opcion, font=("Arial", 12), bg=self.color_blanco, fg=self.color_verde, command=lambda o=opcion: self.mostrar_opcion(o))
+            boton.pack(side=tk.LEFT, padx=10, pady=5)
+            self.botones_menu.append(boton)
+
+        # Campos para la lista de elementos
+        self.lista_frame = tk.Frame(self.frame, bg=self.color_blanco)
+        self.lista_frame.pack(expand=True, fill=tk.BOTH, padx=20, pady=10)
+
+        # Lista de elementos
+        self.lista_label = tk.Label(self.lista_frame, text="", font=("Arial", 12), bg=self.color_blanco)
+        self.lista_label.pack(expand=True, fill=tk.BOTH)
+
+        # Datos de ejemplo
+        self.clientes = [{"nombre": "Juan", "telefono": "123456789"}, {"nombre": "Ana", "telefono": "987654321"}]
+        self.mascotas = [{"nombre": "Luna", "especie": "Perro", "raza": "Labrador", "dueño": "Juan"}, {"nombre": "Milo", "especie": "Gato", "raza": "Siamés", "dueño": "Ana"}]
+        self.citas = [{"fecha": "01/04/2024", "hora": "10:00", "mascota": "Luna"}, {"fecha": "02/04/2024", "hora": "11:00", "mascota": "Milo"}]
+
+    def mostrar_opcion(self, opcion):
+        self.limpiar_lista()
+        if opcion == "Clientes":
+            self.mostrar_lista_clientes()
+        elif opcion == "Mascotas":
+            self.mostrar_lista_mascotas()
+        elif opcion == "Citas":
+            self.mostrar_lista_citas()
+
+    def limpiar_lista(self):
+        self.lista_label.config(text="")
+
+    def mostrar_lista_clientes(self):
+        self.limpiar_lista()
+        self.lista_label.config(text="Lista de Clientes:\n\n")
+        for cliente in self.clientes:
+            self.lista_label.config(text=self.lista_label.cget("text") + f"Nombre: {cliente['nombre']}, Teléfono: {cliente['telefono']}\n")
         
-       
-        self.frame = tk.Frame(self.master, bg=self.color_secundario, padx=20, pady=20)
-        self.frame.pack()
+        # Agregar botones para acciones de cliente
+        self.agregar_botones_accion("Clientes")
 
-  
-        self.nombre_veterinaria_label = tk.Label(self.frame, text="Clínica PetCare", font=("Arial", 20, "bold"), bg=self.color_secundario, fg=self.color_verde)
-        self.nombre_veterinaria_label.grid(row=0, columnspan=2, pady=(0, 20))  # Añadido pady al grid
-
-      
-        self.nombre_label = tk.Label(self.frame, text="Nombre de la mascota:", font=("Arial", 12), bg=self.color_secundario)
-        self.nombre_label.grid(row=1, column=0, sticky="e")
-        self.nombre_entry = tk.Entry(self.frame, font=("Arial", 12))
-        self.nombre_entry.grid(row=1, column=1, padx=10, pady=5)
-
-        self.especie_label = tk.Label(self.frame, text="Especie:", font=("Arial", 12), bg=self.color_secundario)
-        self.especie_label.grid(row=2, column=0, sticky="e")
-        self.especie_entry = tk.Entry(self.frame, font=("Arial", 12))
-        self.especie_entry.grid(row=2, column=1, padx=10, pady=5)
-
-        self.raza_label = tk.Label(self.frame, text="Raza:", font=("Arial", 12), bg=self.color_secundario)
-        self.raza_label.grid(row=3, column=0, sticky="e")
-        self.raza_entry = tk.Entry(self.frame, font=("Arial", 12))
-        self.raza_entry.grid(row=3, column=1, padx=10, pady=5)
-
-      
-        self.registrar_button = tk.Button(self.frame, text="Registrar Mascota", font=("Arial", 12), bg=self.color_verde, fg=self.color_secundario, command=self.registrar_mascota)
-        self.registrar_button.grid(row=4, columnspan=2, pady=10)
-
-        self.buscar_label = tk.Label(self.frame, text="Buscar por nombre:", font=("Arial", 12), bg=self.color_secundario)
-        self.buscar_label.grid(row=5, column=0, sticky="e")
-        self.buscar_entry = tk.Entry(self.frame, font=("Arial", 12))
-        self.buscar_entry.grid(row=5, column=1, padx=10, pady=5)
-
-        self.buscar_button = tk.Button(self.frame, text="Buscar", font=("Arial", 12), bg=self.color_verde, fg=self.color_secundario, command=self.buscar_mascota)
-        self.buscar_button.grid(row=6, columnspan=2, pady=5)
-
-        self.registros_label = tk.Label(self.frame, text="Mascotas registradas:", font=("Arial", 12), bg=self.color_secundario)
-        self.registros_label.grid(row=7, column=0, columnspan=2, pady=(20, 5))
-
-        self.registros_listbox = tk.Listbox(self.frame, font=("Arial", 12), width=40, height=10)
-        self.registros_listbox.grid(row=8, column=0, columnspan=2)
-
-      
-        self.editar_button = tk.Button(self.frame, text="Editar", font=("Arial", 12), bg=self.color_verde, fg=self.color_secundario, command=self.editar_mascota)
-        self.editar_button.grid(row=9, column=0, padx=5, pady=5)
-
-        self.eliminar_button = tk.Button(self.frame, text="Eliminar", font=("Arial", 12), bg=self.color_verde, fg=self.color_secundario, command=self.eliminar_mascota)
-        self.eliminar_button.grid(row=9, column=1, padx=5, pady=5)
-
-        self.mascotas = [
-            {"nombre": "Luna", "especie": "Perro", "raza": "Labrador Retriever"},
-            {"nombre": "Milo", "especie": "Gato", "raza": "Siamés"}
-        ]
-        self.actualizar_lista_mascotas()
-
-    def registrar_mascota(self):
-        nombre = self.nombre_entry.get()
-        especie = self.especie_entry.get()
-        raza = self.raza_entry.get()
-
-        if nombre and especie and raza:
-            nueva_mascota = {"nombre": nombre, "especie": especie, "raza": raza}
-            self.mascotas.append(nueva_mascota)
-            self.actualizar_lista_mascotas()
-            messagebox.showinfo("Éxito", "Mascota registrada correctamente.")
-            self.limpiar_campos()
-        else:
-            messagebox.showerror("Error", "Por favor complete todos los campos.")
-
-    def buscar_mascota(self):
-        nombre_buscar = self.buscar_entry.get()
-        if nombre_buscar:
-            mascotas_encontradas = [mascota for mascota in self.mascotas if mascota["nombre"].lower() == nombre_buscar.lower()]
-            if mascotas_encontradas:
-                messagebox.showinfo("Mascotas encontradas", "\n".join([f"Nombre: {m['nombre']}, Especie: {m['especie']}, Raza: {m['raza']}" for m in mascotas_encontradas]))
-            else:
-                messagebox.showinfo("Mascotas encontradas", "No se encontraron mascotas con ese nombre.")
-        else:
-            messagebox.showerror("Error", "Por favor ingrese un nombre para buscar.")
-
-    def editar_mascota(self):
-        seleccionado = self.registros_listbox.curselection()
-        if seleccionado:
-            indice = seleccionado[0]
-            mascota_seleccionada = self.mascotas[indice]
-            self.nombre_entry.delete(0, tk.END)
-            self.nombre_entry.insert(0, mascota_seleccionada["nombre"])
-            self.especie_entry.delete(0, tk.END)
-            self.especie_entry.insert(0, mascota_seleccionada["especie"])
-            self.raza_entry.delete(0, tk.END)
-            self.raza_entry.insert(0, mascota_seleccionada["raza"])
-            messagebox.showinfo("Edición", "Los datos de la mascota están listos para ser editados.")
-        else:
-            messagebox.showerror("Error", "Por favor seleccione una mascota de la lista para editar.")
-
-    def eliminar_mascota(self):
-        seleccionado = self.registros_listbox.curselection()
-        if seleccionado:
-            indice = seleccionado[0]
-            del self.mascotas[indice]
-            self.actualizar_lista_mascotas()
-            messagebox.showinfo("Eliminación", "La mascota seleccionada ha sido eliminada.")
-        else:
-            messagebox.showerror("Error", "Por favor seleccione una mascota de la lista para eliminar.")
-
-    def actualizar_lista_mascotas(self):
-        self.registros_listbox.delete(0, tk.END)
+    def mostrar_lista_mascotas(self):
+        self.limpiar_lista()
+        self.lista_label.config(text="Lista de Mascotas:\n\n")
         for mascota in self.mascotas:
-            self.registros_listbox.insert(tk.END, f"{mascota['nombre']} - {mascota['especie']} - {mascota['raza']}")
-
-    def limpiar_campos(self):
-        self.nombre_entry.delete(0, tk.END)
-        self.especie_entry.delete(0, tk.END)
-        self.raza_entry.delete(0, tk.END)
+            self.lista_label.config(text=self.lista_label.cget("text") + f"Nombre: {mascota['nombre']}, Especie: {mascota['especie']}, Raza: {mascota['raza']}, Dueño: {mascota['dueño']}\n")
         
+        # Agregar botones para acciones de mascota
+        self.agregar_botones_accion("Mascotas")
+
+    def mostrar_lista_citas(self):
+        self.limpiar_lista()
+        self.lista_label.config(text="Lista de Citas:\n\n")
+        for cita in self.citas:
+            self.lista_label.config(text=self.lista_label.cget("text") + f"Fecha: {cita['fecha']}, Hora: {cita['hora']}, Mascota: {cita['mascota']}\n")
+        
+        # Agregar botones para acciones de cita
+        self.agregar_botones_accion("Citas")
+
+    def agregar_botones_accion(self, opcion):
+        boton_agregar = tk.Button(self.lista_frame, text="Agregar", font=("Arial", 10), bg=self.color_blanco, fg=self.color_verde, command=lambda o=opcion: self.agregar_elemento(o))
+        boton_agregar.pack(side=tk.LEFT, padx=10, pady=5)
+        
+        if opcion == "Clientes":
+            boton_editar = tk.Button(self.lista_frame, text="Editar", font=("Arial", 10), bg=self.color_blanco, fg=self.color_verde, command=lambda o=opcion: self.editar_elemento(o))
+            boton_editar.pack(side=tk.LEFT, padx=10, pady=5)
+            boton_eliminar = tk.Button(self.lista_frame, text="Eliminar", font=("Arial", 10), bg=self.color_blanco, fg=self.color_verde, command=lambda o=opcion: self.eliminar_elemento(o))
+            boton_eliminar.pack(side=tk.LEFT, padx=10, pady=5)
+        elif opcion == "Mascotas":
+            boton_editar = tk.Button(self.lista_frame, text="Editar", font=("Arial", 10), bg=self.color_blanco, fg=self.color_verde, command=lambda o=opcion: self.editar_elemento(o))
+            boton_editar.pack(side=tk.LEFT, padx=10, pady=5)
+            boton_eliminar = tk.Button(self.lista_frame, text="Eliminar", font=("Arial", 10), bg=self.color_blanco, fg=self.color_verde, command=lambda o=opcion: self.eliminar_elemento(o))
+            boton_eliminar.pack(side=tk.LEFT, padx=10, pady=5)
+        elif opcion == "Citas":
+            boton_editar = tk.Button(self.lista_frame, text="Editar", font=("Arial", 10), bg=self.color_blanco, fg=self.color_verde, command=lambda o=opcion: self.editar_elemento(o))
+            boton_editar.pack(side=tk.LEFT, padx=10, pady=5)
+            boton_eliminar = tk.Button(self.lista_frame, text="Eliminar", font=("Arial", 10), bg=self.color_blanco, fg=self.color_verde, command=lambda o=opcion: self.eliminar_elemento(o))
+            boton_eliminar.pack(side=tk.LEFT, padx=10, pady=5)
+
+    def agregar_elemento(self, opcion):
+        if opcion == "Clientes":
+            nombre = simpledialog.askstring("Agregar Cliente", "Ingrese el nombre del cliente:")
+            telefono = simpledialog.askstring("Agregar Cliente", "Ingrese el teléfono del cliente:")
+            if nombre and telefono:
+                self.clientes.append({"nombre": nombre, "telefono": telefono})
+                self.mostrar_lista_clientes()
+            else:
+                messagebox.showerror("Error", "Por favor complete todos los campos.")
+        elif opcion == "Mascotas":
+            nombre = simpledialog.askstring("Agregar Mascota", "Ingrese el nombre de la mascota:")
+            especie = simpledialog.askstring("Agregar Mascota", "Ingrese la especie de la mascota:")
+            raza = simpledialog.askstring("Agregar Mascota", "Ingrese la raza de la mascota:")
+            dueno = simpledialog.askstring("Agregar Mascota", "Ingrese el dueño de la mascota:")
+            if nombre and especie and raza and dueno:
+                self.mascotas.append({"nombre": nombre, "especie": especie, "raza": raza, "dueño": dueno})
+                self.mostrar_lista_mascotas()
+            else:
+                messagebox.showerror("Error", "Por favor complete todos los campos.")
+        elif opcion == "Citas":
+            fecha = simpledialog.askstring("Agendar Cita", "Ingrese la fecha de la cita:")
+            hora = simpledialog.askstring("Agendar Cita", "Ingrese la hora de la cita:")
+            mascota = simpledialog.askstring("Agendar Cita", "Ingrese el nombre de la mascota para la cita:")
+            if fecha and hora and mascota:
+                self.citas.append({"fecha": fecha, "hora": hora, "mascota": mascota})
+                self.mostrar_lista_citas()
+            else:
+                messagebox.showerror("Error", "Por favor complete todos los campos.")
+
+    def editar_elemento(self, opcion):
+        pass
+
+    def eliminar_elemento(self, opcion):
+        pass
 
 def main():
     root = tk.Tk()
